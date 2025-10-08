@@ -52,7 +52,7 @@ jobs:
           # The GitHub token is automatically available
           github_token: ${{ secrets.GITHUB_TOKEN }}
           # The branch where the built files will be pushed
-          publish_branch: gh-pages 
+          publish_branch: main
           # The directory containing the built static files
           publish_dir: ./build
           # Optional: commit message for the deployment
