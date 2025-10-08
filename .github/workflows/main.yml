@@ -1,0 +1,59 @@
+name: Deploy React App to GitHub Pages
+
+on:
+  # Triggers the workflow on push events to the main branch
+  push:
+    branches:
+      - main
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions to allow the deployment job to write to the repository's `gh-pages` branch
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build_and_deploy:
+    # Runs on the latest Ubuntu runner
+    runs-on: ubuntu-latest
+    
+    # Environment variables for Node.js setup (optional but recommended)
+    env:
+      NODE_VERSION: '20' # Use a stable Node.js version
+      
+    steps:
+      - name: ⚙️ Checkout Repository
+        # Checks out your repository code
+        uses: actions/checkout@v4
+      
+      - name: 🛠️ Setup Node.js
+        # Installs the specified Node.js version
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm' # Caches npm dependencies to speed up subsequent runs
+          cache-dependency-path: 'package-lock.json' # Adjust if you use yarn/pnpm
+      
+      - name: 📦 Install Dependencies
+        # Installs your project's npm dependencies
+        run: npm install
+        
+      - name: 🏗️ Build React App
+        # Executes the build command defined in your package.json
+        # The output is typically in the 'build' or 'dist' folder
+        run: npm run build
+        
+      - name: 🚀 Deploy to GitHub Pages
+        # Uses a popular action to deploy a directory (the build output) to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          # The GitHub token is automatically available
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # The branch where the built files will be pushed
+          publish_branch: gh-pages 
+          # The directory containing the built static files
+          publish_dir: ./build
+          # Optional: commit message for the deployment
+          commit_message: Deploy React App to GitHub Pages (Build ${{ github.sha }})
