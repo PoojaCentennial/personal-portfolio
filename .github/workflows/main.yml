@@ -10,7 +10,7 @@ on:
 
 # Sets permissions to allow the deployment job to write to the repository's `gh-pages` branch
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
