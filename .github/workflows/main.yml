@@ -1,4 +1,4 @@
-name: Deploy React App to GitHub Pages
+name: Deploy React + Vite App to GitHub Pages
 
 on:
   # Triggers the workflow on push events to the main branch
@@ -19,13 +19,12 @@ jobs:
     # Runs on the latest Ubuntu runner
     runs-on: ubuntu-latest
     
-    # Environment variables for Node.js setup (optional but recommended)
+    # Environment variables for Node.js setup
     env:
       NODE_VERSION: '20' # Use a stable Node.js version
       
     steps:
       - name: ⚙️ Checkout Repository
-        # Checks out your repository code
         uses: actions/checkout@v4
       
       - name: 🛠️ Setup Node.js
@@ -33,27 +32,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm' # Caches npm dependencies to speed up subsequent runs
+          cache: 'npm' # Caches npm dependencies
           cache-dependency-path: 'package-lock.json' # Adjust if you use yarn/pnpm
       
       - name: 📦 Install Dependencies
         # Installs your project's npm dependencies
         run: npm install
         
-      - name: 🏗️ Build React App
-        # Executes the build command defined in your package.json
-        # The output is typically in the 'build' or 'dist' folder
+      - name: 🏗️ Build Vite App
+        # Executes the build command defined in your package.json (usually 'npm run build')
+        # Vite's output is typically in the 'dist' folder
         run: npm run build
         
       - name: 🚀 Deploy to GitHub Pages
-        # Uses a popular action to deploy a directory (the build output) to GitHub Pages
+        # Uses a popular action to deploy a directory to the gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
         with:
-          # The GitHub token is automatically available
           github_token: ${{ secrets.GITHUB_TOKEN }}
           # The branch where the built files will be pushed
-          publish_branch: main
-          # The directory containing the built static files
-          publish_dir: ./build
-          # Optional: commit message for the deployment
-          commit_message: Deploy React App to GitHub Pages (Build ${{ github.sha }})
+          publish_branch: gh-pages 
+          # *** NOTE: Vite's default build output directory is 'dist' ***
+          publish_dir: ./dist
+          # Optional: commit message
+          commit_message: Deploy React + Vite App to GitHub Pages (Build ${{ github.sha }})
